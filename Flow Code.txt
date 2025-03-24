@@ -1,0 +1,301 @@
+//Recurrence (Runs on Monday Every Week)//
+
+{
+    "recurrence": {
+        "frequency": "Week",
+        "interval": 1,
+        "startTime": "2025-03-17T08:00:00Z",
+        "schedule": {
+            "weekDays": [
+                "Monday"
+            ]
+        }
+    },
+    "metadata": {
+        "operationMetadataId": "1b2c7b2b-d6a9-414d-aa36-abeb2d8592d2"
+    }
+}
+
+-----------------------------------------------------------------------------
+
+//Execute stored procedure (V2) for HTML Table//
+
+{
+    "inputs": {
+        "host": {
+            "connectionName": "shared_sql_1",
+            "operationId": "ExecuteProcedure_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sql"
+        },
+        "parameters": {
+            "server": "default",
+            "database": "default",
+            "procedure": "[dbo].[TicketSalesSummary]",
+            "parameters": {}
+        },
+        "authentication": "@parameters('$authentication')"
+    },
+    "metadata": {
+        "operationMetadataId": "bdfa04f3-f3ac-4944-82c0-ef05b67964f3"
+    }
+}
+
+
+-----------------------------------------------------------------------------
+
+
+//Parse JSON for HTML Table*//
+
+
+{
+    "inputs": {
+        "content": "@outputs('Execute_stored_procedure_(V2)_for_HTML_Table')?['body/resultsets']",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Table1": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "Period": {
+                                "type": "string"
+                            },
+                            "TotalSales": {
+                                "type": "integer"
+                            },
+                            "TotalRevenue": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "Period",
+                            "TotalSales",
+                            "TotalRevenue"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "metadata": {
+        "operationMetadataId": "4774c142-1796-4fd1-943d-9224db63af58"
+    }
+}
+
+
+-----------------------------------------------------------------------------
+
+//Select HTML Table//
+
+{
+    "inputs": {
+        "from": "@body('Parse_JSON_for_HTML_Table')?['Table1']",
+        "select": {
+            "Period": "@item()?['Period']",
+            "Total Sales": "@item()?['TotalSales']",
+            "Total Revenue": "@item()?['TotalRevenue']"
+        }
+    },
+    "metadata": {
+        "operationMetadataId": "e9b78187-0189-4569-b9a6-21d55f6a17b5"
+    }
+}
+
+
+-----------------------------------------------------------------------------
+
+//Create HTML Table//
+
+{
+    "inputs": {
+        "from": "@body('Select_HTML_Table')",
+        "format": "HTML"
+    },
+    "metadata": {
+        "operationMetadataId": "11e6176a-9958-47f9-9264-2f03a40910f6"
+    }
+}
+
+
+-----------------------------------------------------------------------------
+
+//Execute stored procedure (V2) for CSV Report//
+
+{
+    "inputs": {
+        "host": {
+            "connectionName": "shared_sql_1",
+            "operationId": "ExecuteProcedure_V2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_sql"
+        },
+        "parameters": {
+            "server": "default",
+            "database": "default",
+            "procedure": "[dbo].[AllConcertTickets]",
+            "parameters": {}
+        },
+        "authentication": "@parameters('$authentication')"
+    },
+    "metadata": {
+        "operationMetadataId": "43738da0-58f4-4834-a668-6a908ef98035"
+    }
+}
+
+----------------------------------------------------------------------------- 
+
+//Parse JSON for CSV Report//
+
+{
+    "inputs": {
+        "content": "@outputs('Execute_stored_procedure_(V2)_for_CSV_Report')?['body/resultsets']",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "Table1": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ticket_id": {
+                                "type": "integer"
+                            },
+                            "ticket_code": {
+                                "type": "string"
+                            },
+                            "ticket_price": {
+                                "type": "number"
+                            },
+                            "concert_name": {
+                                "type": "string"
+                            },
+                            "concert_date": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "artist": {
+                                "type": "string"
+                            },
+                            "venue": {
+                                "type": "string"
+                            },
+                            "city": {
+                                "type": "string"
+                            },
+                            "seat_number": {
+                                "type": "string"
+                            },
+                            "purchase_date": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "required": [
+                            "ticket_id",
+                            "ticket_code",
+                            "ticket_price",
+                            "concert_name",
+                            "concert_date",
+                            "artist",
+                            "venue",
+                            "city",
+                            "seat_number",
+                            "purchase_date"
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "metadata": {
+        "operationMetadataId": "d674067f-8293-474d-b87f-5cc8875f838e"
+    }
+}
+
+
+----------------------------------------------------------------------------- 
+
+//Select  for CSV Report//
+
+{
+    "inputs": {
+        "from": "@body('Parse_JSON_for_CSV_Report')?['Table1']",
+        "select": {
+            "Ticket ID": "@item()?['ticket_id']",
+            "Ticket Code": "@item()?['ticket_code']",
+            "Ticket Price": "@item()?['ticket_price']",
+            "Concert Name": "@item()?['concert_name']",
+            "Concert Date": "@item()?['concert_date']",
+            "Artist": "@item()?['artist']",
+            "Venue": "@item()?['venue']",
+            "City": "@item()?['city']",
+            "Seat Number": "@item()?['seat_number']",
+            "Purchase Date": "@item()?['purchase_date']"
+        }
+    },
+    "metadata": {
+        "operationMetadataId": "205bd121-2b7a-413d-9757-d63b6c5656bd"
+    }
+}
+
+
+----------------------------------------------------------------------------- 
+
+//Create CSV Table//
+
+{
+    "inputs": {
+        "from": "@body('Select__for_CSV_Report')",
+        "format": "CSV"
+    },
+    "metadata": {
+        "operationMetadataId": "e437b6b5-cc08-4e65-8e35-4881bb53d948"
+    }
+}
+
+
+
+----------------------------------------------------------------------------- 
+
+//Apply to each (Format for HTML Table): Compose//
+
+{
+    "inputs": "<table style=\"border: 1px solid #1C6EA4; background-color: #EEEEEE; width: 100%; text-align: left; border-collapse: collapse;\">\n  <thead>\n    <tr>\n      <th style=\"font-size: 15px; font-weight: bold; color: #FFFFFF; border: 1px solid #D0E4F5; padding: 5px;\">Period</th>\n      <th style=\"font-size: 15px; font-weight: bold; color: #FFFFFF; border: 1px solid #D0E4F5; padding: 5px;\">Total Sales</th>\n      <th style=\"font-size: 15px; font-weight: bold; color: #FFFFFF; border: 1px solid #D0E4F5; padding: 5px;\">Total Revenue</th>\n    </tr>\n  </thead>\n    <tbody>\n        <tr>\n            <td style=\"border: 1px solid #AAAAAA; padding: 5px; font-size: 13px;\">@{items('Apply_to_each_(Format_for_HTML_Table)')?['Period']}</td>\n            <td style=\"border: 1px solid #AAAAAA; padding: 5px; font-size: 13px;\">@{items('Apply_to_each_(Format_for_HTML_Table)')?['TotalSales']}</td>\n            <td style=\"border: 1px solid #AAAAAA; padding: 5px; font-size: 13px;\">@{items('Apply_to_each_(Format_for_HTML_Table)')?['TotalRevenue']}</td>\n        </tr>\n    </tbody>\n</table>\n\n\n",
+    "metadata": {
+        "operationMetadataId": "b2c7037d-6c86-4b67-8f08-a28f1a5a6faa"
+    }
+}
+
+
+----------------------------------------------------------------------------- 
+
+
+//Send an email (V2)//
+
+{
+    "inputs": {
+        "host": {
+            "connectionName": "shared_office365",
+            "operationId": "SendEmailV2",
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+        },
+        "parameters": {
+            "emailMessage/To": "Charlotte.Busse@student.laurea.fi",
+            "emailMessage/Subject": "Weekly Ticket Sales Report @{formatDateTime(utcNow(),'dd/MM/yyyy')}",
+            "emailMessage/Body": "<p>Hi,<br>\n<br>\nHere's the weekly ticket sales report.<br>\n<br>\n@{body('Create_HTML_Table')}<br>\n<br>\n<br>\nBest regards,<br>\nTicketSaver Team</p>",
+            "emailMessage/Attachments": [
+                {
+                    "Name": "Weekly_Ticket_Sales_Report_ @{formatDateTime(utcNow(),'dd/MM/yyyy')}.csv",
+                    "ContentBytes": "@body('Create_CSV_Table')"
+                }
+            ],
+            "emailMessage/Importance": "Normal"
+        },
+        "authentication": "@parameters('$authentication')"
+    },
+    "metadata": {
+        "operationMetadataId": "7b63f88a-e09f-4b81-8380-6275ad6f8ebf"
+    }
+}
+
+
